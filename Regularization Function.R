@@ -1,6 +1,7 @@
 library(ISLR)
 library(leaps)
 library(glmnet)
+
 Hitters = na.omit(Hitters)
 
 regularize <- function(a, plot=FALSE) {
@@ -21,28 +22,30 @@ regularize <- function(a, plot=FALSE) {
   #ridge.mod.train = glmnet(x[dt,],y[dt],alpha=0,lambda=lambda_range, thresh =1e-12) #Training Models 
   
   cv.out=cv.glmnet(x.train,y.train,alpha=a,lambda = lambdas); cv.out
+  cv.out$lambda.min
+  (bestlam=cv.out$lambda.min)
   if (plot == TRUE) {
     plot(cv.out) #Plots the CV(10) estimate (pg. 181) for each lambda.
+    abline(v=log(bestlam), col="red")
   }
   #Why are 19's appearing at the top?
-  (bestlam=cv.out$lambda.min);abline(v=log(bestlam), col="red")
   ridge.out=glmnet(x,y,alpha=a) #Ridge Regression model with unspecified lambda(?). Documentation warns against supplying a single lamdba for prediction.
   (best_model_coef <- predict(ridge.out,type="coefficients",s=bestlam)) #Predictions for model with cross validated lambda. Documentation advises to supply single lambda in predict()
   
   #3(d)
   (y.hat.test <- predict(ridge.out,s=bestlam, newx = x.test)) #Predictions for model with cross validated lambda. Documentation advises to supply single lambda in predict()
-  y.bar.test <- mean(y.test)
+  (y.bar.test <- mean(y.test))
   (SSres.test <- sum((y.test-y.hat.test)^2))
-  (SStot.test <- sum((y.test-y.bar)^2))
+  (SStot.test <- sum((y.test-y.bar.test)^2))
   (R2.test <- 1 - SSres.test/SStot.test)
   
   (y.hat.train <- predict(ridge.out,s=bestlam, newx = x.train)) #Predictions for model with cross validated lambda. Documentation advises to supply single lambda in predict()
-  y.bar.train <- mean(y.train)
+  (y.bar.train <- mean(y.train))
   (SSres.train <- sum((y.train-y.hat.train)^2))
-  (SStot.train <- sum((y.train-y.bar)^2))
+  (SStot.train <- sum((y.train-y.bar.train)^2))
   (R2.train <- 1 - SSres.train/SStot.train)
   
-  R2 <- data.frame(R2.train,R2.test)
+  R2 <- data.frame(R2.train,R2.test);R2
   
   if (a == 0) {
     colnames(R2) = c("Ridge.Train.R2","Ridge.Test.R2")
@@ -54,4 +57,3 @@ regularize <- function(a, plot=FALSE) {
   
   return(R2)
 }
-
