@@ -1,5 +1,6 @@
 #setwd("C:\\Users\\leahc\\OneDrive - The City University of New York\\Masters\\Classes\\STA 9890 - Statistical Learning\\Final Project Git")
 source("Regularization Function.R")
+source("Random Forest Function.R")
 load(".Rdata")
 library(latex2exp)
 
