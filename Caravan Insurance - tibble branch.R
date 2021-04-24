@@ -3,100 +3,7 @@ library(tidyverse)
 
 ##  Headers <- read_csv("https://raw.githubusercontent.com/michaeljagdharry/STA9890/main/Headers.csv") ## Successfully made header tibble from Github
 ##  View(Headers)  OLD VERSION
-Headers <- read_csv("https://raw.githubusercontent.com/michaeljagdharry/STA9890/main/Headers.csv", 
-                    col_types = cols(`MOSTYPE Customer Subtype see L0` = col_factor(levels = c("1", 
-                                                                                               "2", "3", "4", "5", "6", "7", "8", 
-                                                                                               "9", "10", "11", "12", "13", "14", 
-                                                                                               "15", "16", "17", "18", "19", "20", 
-                                                                                               "21", "22", "23", "24", "25", "26", 
-                                                                                               "27", "28", "29", "30", "31", "32", 
-                                                                                               "33", "34", "35", "36", "37", "38", 
-                                                                                               "39", "40", "41")), 
-                                     `MAANTHUI Number of houses 1 - 10` = col_integer(), 
-                                     `MGEMOMV Avg size household 1 - 6` = col_integer(), 
-                                     `MGEMLEEF Avg age see L1` = col_factor(levels = c("1", "2", "3", "4", "5", "6")), 
-                                     `MOSHOOFD Customer main type see L2` = col_factor(levels = c("1", "2", "3", "4", "5", "6", "7","8", "9", "10")), 
-                                     `MGODRK Roman catholic see L3` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")), 
-                                     `MGODPR Protestant ...` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")), 
-                                     `MGODOV Other religion` = col_factor(levels = c("0", "1", "2", "3", "4", "5")), 
-                                     `MGODGE No religion` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")), 
-                                     `MRELGE Married` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")),  
-                                     `MRELSA Living together` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7")), 
-                                     `MRELOV Other relation` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")), 
-                                     `MFALLEEN Singles` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")),
-                                     `MFGEKIND Household without children` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")),
-                                     `MFWEKIND Household with children` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")),
-                                     `MOPLHOOG High level education` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")),
-                                     `MOPLMIDD Medium level education` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")),
-                                     `MOPLLAAG Lower level education` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")),
-                                     `MBERHOOG High status` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")),
-                                     `MBERZELF Entrepreneur` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")),
-                                     `MBERBOER Farmer` = col_factor(levels = c("0", "1", "2", "3", "4", "5")),
-                                     `MBERMIDD Middle management` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")),
-                                     `MBERARBG Skilled labourers` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")),
-                                     `MBERARBO Unskilled labourers` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")),
-                                     `MSKA Social class A` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")),
-                                     `MSKB1 Social class B1` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")),
-                                     `MSKB2 Social class B2` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")),
-                                     `MSKC Social class C` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")),
-                                     `MSKD Social class D` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")),
-                                     `MHHUUR Rented house` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")),
-                                     `MHKOOP Home owners` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")),
-                                     `MAUT1 1 carcol_factor` = (levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")),
-                                     `MAUT2 2 cars` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")),
-                                     `MAUT0 No car` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7")),
-                                     `MZFONDS National Health Service` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")),
-                                     `MZPART Private health insurance` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")),
-                                     `MINKM30 Income < 30.000` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")),
-                                     `MINK3045 Income 30-45.000` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")),
-                                     `MINK4575 Income 45-75.000` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")),
-                                     `MINK7512 Income 75-122.000` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")),
-                                     `MINK123M Income >123.000` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")),
-                                     `MINKGEM Average income` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")),
-                                     `MKOOPKLA Purchasing power class` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8")),
-                                     `PWAPART Contribution private third party insurance see L4` = col_factor(levels = c("0", "1", "2", "3", "4", "5", "6", "7", "8", "9")),
-                                     `PWABEDR Contribution third party insurance (firms)` = col_integer(),
-                                     `PWALAND Contribution third party insurane (agriculture)` = col_integer(), 
-                                     `PPERSAUT Contribution car policies` = col_integer(), 
-                                     `PBESAUT Contribution delivery van policies` = col_integer(), 
-                                     `PMOTSCO Contribution motorcycle/scooter policies` = col_integer(), 
-                                     `PVRAAUT Contribution lorry policies` = col_integer(),
-                                     `PAANHANG Contribution trailer policies` = col_integer(),
-                                     `PTRACTOR Contribution tractor policies` = col_integer(),
-                                     `PWERKT Contribution agricultural machines policies` = col_integer(),
-                                     `PBROM Contribution moped policies` = col_integer(),
-                                     `PLEVEN Contribution life insurances` = col_integer(),
-                                     `PPERSONG Contribution private accident insurance policies` = col_integer(),
-                                     `PGEZONG Contribution family accidents insurance policies` = col_integer(),
-                                     `PWAOREG Contribution disability insurance policies` = col_integer(),
-                                     `PBRAND Contribution fire policies` = col_integer(),
-                                     `PZEILPL Contribution surfboard policies` = col_integer(),
-                                     `PPLEZIER Contribution boat policies` = col_integer(),
-                                     `PFIETS Contribution bicycle policies` = col_integer(),
-                                     `PINBOED Contribution property insurance policies` = col_integer(),
-                                     `PBYSTAND Contribution social security insurance policies` = col_integer(),
-                                     `AWAPART Number of private third party insurance 1 - 12` = col_integer(),
-                                     `AWABEDR Number of third party insurance (firms) ...` = col_integer(),
-                                     `AWALAND Number of third party insurane (agriculture` = col_integer(),
-                                     `APERSAUT Number of car policies` = col_integer(),
-                                     `ABESAUT Number of delivery van policies` = col_integer(),
-                                     `AMOTSCO Number of motorcycle/scooter policies` = col_integer(),
-                                     `AVRAAUT Number of lorry policies` = col_integer(),
-                                     `AAANHANG Number of trailer policies` = col_integer(),
-                                     `ATRACTOR Number of tractor policies` = col_integer(),
-                                     `AWERKT Number of agricultural machines policies` = col_integer(),
-                                     `ABROM Number of moped policies` = col_integer(),
-                                     `ALEVEN Number of life insurances` = col_integer(),
-                                     `APERSONG Number of private accident insurance policies` = col_integer(),
-                                     `AGEZONG Number of family accidents insurance policies` = col_integer(),
-                                     `AWAOREG Number of disability insurance policies` = col_integer(),
-                                     `ABRAND Number of fire policies` = col_integer(),
-                                     `AZEILPL Number of surfboard policies` = col_integer(),
-                                     `APLEZIER Number of boat policies` = col_integer(),
-                                     `AFIETS Number of bicycle policies` = col_integer(),
-                                     `AINBOED Number of property insurance policies` = col_integer(),
-                                     `ABYSTAND Number of social security insurance policies` = col_integer(),
-                                     `CARAVAN Number of mobile home policies 0 - 1` = col_factor(levels=c("0", "1"))))
+Headers <- read.csv("https://raw.githubusercontent.com/michaeljagdharry/STA9890/main/Headers.csv") 
 
 Caravan <- read_delim("https://raw.githubusercontent.com/michaeljagdharry/STA9890/main/ticdata2000.txt", 
                       "\t", escape_double = FALSE, col_names = FALSE, 
@@ -193,16 +100,9 @@ Caravan <- read_delim("https://raw.githubusercontent.com/michaeljagdharry/STA989
                                        X84 = col_integer(),
                                        X85 = col_integer(),
                                        X86 = col_factor(levels=c("0", "1"))), trim_ws = TRUE) ## It worked after many attempts, Pull of tibble data
+
+colnames(Caravan) = Headers
+Headers2 <- t(colnames(Headers))
+colnames(Caravan) = Headers2
 View(Caravan)
-
-
-Caravan2 <- bind_rows(Headers, 
-                      setNames(Caravan, names(Headers))) ## Would not work without getting headers and caravan to have same col_types.  Big headache
-
-
-names(Caravan) <- Caravan %>% slice(1) %>% unlist()
-Caravan <- Caravan %>% slice(-1)
-
-View(Caravan)
-
-sum(is.na(Caravan)) #No missing values!
+str(Caravan)
