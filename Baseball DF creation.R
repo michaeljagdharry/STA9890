@@ -11,7 +11,7 @@ baseball <- full_join(baseball, WAA)
 
 baseball <- baseball %>% mutate(Wins = round(WAA + G*0.5))
 
-baseball.df <- baseball %>% select("#Bat", "BatAge", "R/G",  "G",  "PA", "AB",
+baseball.df <- baseball %>% select("#Bat", "BatAge", "R/G",  "PA", "AB",
                                       "R",  "H", "2B", "3B",  "HR",      "RBI",     "SB",
                                       "CS",      "BB",   "SO",      "BA",      "OBP",     "SLG",     "OPS",
                                       "OPS+",    "TB",     "GDP",     "HBP",     "SH",      "SF",      "IBB",
