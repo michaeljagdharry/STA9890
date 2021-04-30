@@ -18,9 +18,10 @@ regularize <- function(a, cvplot=FALSE, data=baseball.df) {
   lambdas = 10^seq(6,-2,length=50); lambdas #vector of lambdas to try out
   #coef(ridge.mod)[,50] #Accessing the ridge regression coefficients for the 50th lambda
   cv.out=cv.glmnet(x.train,y.train,alpha=a,lambda = lambdas)
+  bestlam=cv.out$lambda.min
   
   #Fitting Model
-  cv.out=glmnet(x,y,alpha=a) 
+  reg.out=glmnet(x,y,alpha=a) 
   #Ridge Regression model with unspecified lambda(?). Documentation warns
   #against supplying a single lamdba for prediction. 
   
@@ -37,9 +38,9 @@ regularize <- function(a, cvplot=FALSE, data=baseball.df) {
   }
 
 # Finding Test, Train R2 and Residuals  ---
-  bestlam=cv.out$lambda.min
   
-  (y.hat.test <- predict(cv.out,s=bestlam, newx = x.test)) 
+  
+  (y.hat.test <- predict(reg.out,s=bestlam, newx = x.test)) 
   #Predictions for model with cross validated lambda. Documentation advises to
   #supply single lambda in predict()
   (y.bar.test <- mean(y.test))
@@ -47,7 +48,7 @@ regularize <- function(a, cvplot=FALSE, data=baseball.df) {
   (SStot.test <- sum((y.test-y.bar.test)^2))
   (R2.test <- 1 - SSres.test/SStot.test)
   
-  (y.hat.train <- predict(cv.out,s=bestlam, newx = x.train)) 
+  (y.hat.train <- predict(reg.out,s=bestlam, newx = x.train)) 
   (y.bar.train <- mean(y.train))
   (SSres.train <- sum((y.train-y.hat.train)^2))
   (SStot.train <- sum((y.train-y.bar.train)^2))
