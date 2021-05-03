@@ -192,20 +192,24 @@ betaS.elnet$feature     =  factor(betaS.elnet$feature, levels = betaS.elnet$feat
 betaS.lasso$feature     =  factor(betaS.lasso$feature, levels = betaS.elnet$feature[order(betaS.elnet$value, decreasing = TRUE)])
 betaS.ridge$feature     =  factor(betaS.ridge$feature, levels = betaS.elnet$feature[order(betaS.elnet$value, decreasing = TRUE)])
 
-imp.rf <- importance(hitters.rf)
+imp.rf <- importance(rf.baseball.out)
 print(imp.rf[order(imp.rf[, 1]), ])
 betaS.rf$feature        =  factor(betaS.rf$feature, levels = betaS.elnet$feature[order(betaS.elnet$value, decreasing = TRUE)])
 
 elnetPlot =  ggplot(betaS.elnet, aes(x=feature, y=value)) +
-  geom_bar(stat = "identity", fill="white", colour="black")
- 
+  geom_bar(stat = "identity", fill="white", colour="black") +
+  ggtitle("Elnet Coefficients") + labs(x="")
+
 lassoPlot =  ggplot(betaS.lasso, aes(x=feature, y=value)) +
-  geom_bar(stat = "identity", fill="white", colour="black")
+  geom_bar(stat = "identity", fill="white", colour="black") +
+  ggtitle("Lasso Coefficients") + labs(x="")
 
 ridgePlot =  ggplot(betaS.ridge, aes(x=feature, y=value)) +
-  geom_bar(stat = "identity", fill="white", colour="black")   
+  geom_bar(stat = "identity", fill="white", colour="black") +
+  ggtitle("Ridge Coefficients") + labs(x="")
 
 rfPlot =  ggplot(betaS.rf, aes(x=feature, y=value)) +
-  geom_bar(stat = "identity", fill="white", colour="black") 
+  geom_bar(stat = "identity", fill="white", colour="black") +
+  ggtitle("Random Forest Variable Importances")
 
 grid.arrange(elnetPlot, lassoPlot, ridgePlot, rfPlot, nrow = 4)
