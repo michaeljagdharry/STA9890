@@ -28,23 +28,54 @@ baseball.df <- baseball.df %>% rename(Bat = "#Bat", Fld = "#Fld", Fld_percent = 
                                       Rtot_by_yr = "Rtot/yr", Rdrs_by_yr = "Rdrs/yr")
 
 #Creating data structure to store R2's ----
-rid.r2 = vector(); las.r2 = vector(); elnet.r2 = vector(); rf.r2 = vector()
+rid.r2 = vector(); las.r2 = vector(); elnet.r2 = vector(); rf.r2 = vector(); 
+rid.cv.t = vector(); las.cv.t = vector(); elnet.cv.t = vector(); 
+rid.all.t = vector(); las.all.t = vector(); elnet.all.t = vector(); rf.all.t = vector(); 
 
-for (i in 1:100) {
-  rid.r2 = rbind(rid.r2, regularize(0)$R2)
-  las.r2 = rbind(las.r2, regularize(1)$R2)
-  elnet.r2 = rbind(elnet.r2, regularize(.5)$R2)
-  rf.r2 = rbind(rf.r2, RF(n = 100)$R2) #For speed/debugging let ntree be small ~ 100
+#Here we use only a few loops & small tree size for debugging.
+#In the final version we will use 100 loops and ntree of maybe around 500.
+for (i in 1:3) {
+  rid = regularize(0)
+  las = regularize(1)
+  elnet = regularize(.5)
+  rf = RF(ntree = 100)
+  
+  #Collecting R2's
+  rid.r2 = rbind(rid.r2, rid$R2)
+  las.r2 = rbind(las.r2, las$R2)
+  elnet.r2 = rbind(elnet.r2, elnet$R2)
+  rf.r2 = rbind(rf.r2, rf$R2) #For speed/debugging let ntree be small ~ 100
+  
+  #Collecting CV Runtimes
+  rid.cv.t = rbind(rid.cv.t, rid$Runtime)
+  las.cv.t = rbind(las.cv.t, las$Runtime)
+  elnet.cv.t = rbind(elnet.cv.t, elnet$Runtime)
+  
+  #Collecting Runtime for Fitting Model to All Data
+  rid.all.t = rbind(rid.all.t, regularize(0,nosplit = T))
+  las.all.t = rbind(las.all.t, regularize(1,nosplit = T))
+  elnet.all.t = rbind(elnet.all.t, regularize(.5,nosplit = T))
+  rf.all.t = rbind(rf.all.t, RF(ntree=100, nosplit = T)) #For speed/debugging let ntree be small ~ 100
 }
 
+#Gathering r2's & times into dataframes
 r2.data <- cbind(rid.r2,las.r2,elnet.r2,rf.r2) 
-#the columns names are not automatically the r2 df names somehow, so I explicitly name them here
-colnames(r2.data) = c("Ridge.Train.R2","Ridge.Test.R2",
-                      "Lasso.Train.R2","Lasso.Test.R2",
-                      "Elnet.Train.R2","Elnet.Test.R2",
-                      "RF.Train.R2","RF.Test.R2")
+cv.t.data <- cbind(rid.cv.t,las.cv.t,elnet.cv.t) 
+all.t.data <- cbind(rid.all.t,las.all.t,elnet.all.t,rf.all.t) 
 
-#Getting tests & trains on different sides of the dataframe
+colnames(cv.t.data) = c("Ridge.CV.Time",#"Ridge.Test.R2",
+                        "Lasso.CV.Time",#"Lasso.Test.R2",
+                        "Elnet.CV.Time"#"Elnet.Test.R2",
+)
+
+colnames(all.t.data) = c("Ridge.All.Time",#"Ridge.Test.R2",
+                         "Lasso.All.Time",#"Lasso.Test.R2",
+                         "Elnet.All.Time",#"Elnet.Test.R2",
+                         "RF.All.Time"#,"RF.Test.R2")
+)
+
+#Getting separate dataframes for train and test r2's:
+#These will supply the data for the corresponding boxplots 
 r2.train <- r2.data[c(1,3,5,7)]
 r2.test <- r2.data[c(2,4,6,8)]
 
@@ -61,10 +92,15 @@ par(mfrow=c(1,1))
 regularize(1, cvplot=T)
 regularize(.5, cvplot=T)
 regularize(0, cvplot=T)
-ridge.cv.time <- regularize(0)$`Runtime` #Ridge
-elnet.cv.time <- regularize(.5)$`Runtime`#Elnet
-lasso.cv.time <- regularize(1)$`Runtime` #Lasso
-cv.times <- rbind(ridge.cv.time,elnet.cv.time,lasso.cv.time)
+
+#Obtaining Point Estimate of CV times
+avg.cv.t <- colMeans(cv.t.data)
+ridge.cv.time <- avg.cv.t[1] #Ridge
+lasso.cv.time <- avg.cv.t[2] #Lasso
+elnet.cv.time <- avg.cv.t[3] #Elnet
+cv.times <- rbind(ridge.cv.time,lasso.cv.time,elnet.cv.time)
+colnames(cv.times) = "CV Runtime"
+row.names(cv.times) = c("Ridge","Lasso","Elnet")
 cv.times
 
 #Part 4d -----
@@ -106,20 +142,23 @@ int.l <- quantile(r2.test$Lasso.Test.R2, probs = c(.05,.95))
 int.e <- quantile(r2.test$Elnet.Test.R2, probs = c(.05,.95))
 int.rf <- quantile(r2.test$RF.Test.R2, probs = c(.05,.95))
 
-#Calculating Execution Time 
-ridge.time <- regularize(0)$`Runtime` #Ridge
-elnet.time <- regularize(.5)$`Runtime`#Elnet
-lasso.time <- regularize(1)$`Runtime` #Lasso
-rf.time <- RF()$`Runtime` #Random Forest 
+#Calculating Execution Time Without Test Set
+avg.all.t <- colMeans(all.t.data)
+ridge.all.time <- avg.all.t[1] #Ridge
+lasso.all.time <- avg.all.t[2] #Lasso
+elnet.all.time <- avg.all.t[3] #Elnet
+rf.all.time <- avg.all.t[4] #Random Forest
+all.times <- rbind(ridge.all.time,lasso.all.time,elnet.all.time,rf.all.time)
+colnames(all.times) = "Total Runtime"
+row.names(all.times) = c("Ridge","Lasso","Elnet","Random Forest")
+all.times
 
-runtimes <- rbind(ridge.time, elnet.time, lasso.time, rf.time)
-
-r2.intervals <- cbind(rbind(int.r, int.l, int.e, int.rf), runtimes)
+r2.intervals <- cbind(rbind(int.r, int.l, int.e, int.rf), all.times)
 rownames(r2.intervals) = c("Ridge", "Lasso", "Elastic Net", "Random Forest")
-colnames(r2.intervals) = c("Rsq 5% Quantile", "Rsq 95% Quantile", "Runtime")
+colnames(r2.intervals) = c("Rsq 5% Quantile", "Rsq 95% Quantile", "Total Runtime")
 r2.intervals
 
-##Part 5c ----
+#Part 5c ----
 #Present Bar plots of the coefficients
 #Use elastic-net estimated coefficients to create an order largest to smallest
 x=model.matrix (Wins~.,baseball.df )[,-1]
