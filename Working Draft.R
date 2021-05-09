@@ -176,16 +176,14 @@ ridge.out=glmnet(x,y,alpha=0, lambda = cv.fit.ridge$lambda.min)
 
 
 betaS.elnet             =     data.frame(c(1:p), as.vector(elnet.out$beta))
-colnames(betaS.elnet)   =     c( "feature", "value")
-
 betaS.lasso             =     data.frame(c(1:p), as.vector(lasso.out$beta))
-colnames(betaS.lasso)   =     c( "feature", "value")
-
 betaS.ridge             =     data.frame(c(1:p), as.vector(ridge.out$beta))
-colnames(betaS.ridge)   =     c( "feature", "value")
-
 betaS.rf                =     data.frame(c(1:p), as.vector(rf.baseball.out$importance))
-colnames(betaS.rf)      =     c( "feature", "value")
+
+colnames(betaS.rf) <- 
+colnames(betaS.elnet) <- 
+colnames(betaS.lasso) <- 
+colnames(betaS.ridge) <- c( "feature", "value")
 
 #Use same order for Lasso, Ridge, RF, create 4x1 figure
 betaS.elnet$feature     =  factor(betaS.elnet$feature, levels = betaS.elnet$feature[order(betaS.elnet$value, decreasing = TRUE)])
@@ -196,20 +194,25 @@ imp.rf <- importance(rf.baseball.out)
 print(imp.rf[order(imp.rf[, 1]), ])
 betaS.rf$feature        =  factor(betaS.rf$feature, levels = betaS.elnet$feature[order(betaS.elnet$value, decreasing = TRUE)])
 
+ 
+col_elnet = ifelse(betaS.elnet$value>0,"turquoise2","tomato1")
+col_lasso = ifelse(betaS.lasso$value>0,"turquoise2","tomato1")
+col_ridge = ifelse(betaS.ridge$value>0,"turquoise2","tomato1")
+
 elnetPlot =  ggplot(betaS.elnet, aes(x=feature, y=value)) +
-  geom_bar(stat = "identity", fill="white", colour="black") +
-  ggtitle("Elnet Coefficients") + labs(x="")
+  geom_bar(stat = "identity", fill=col_elnet, colour="black",) +
+  ggtitle("Elnet Coefficients") + labs(x="",y="")
 
 lassoPlot =  ggplot(betaS.lasso, aes(x=feature, y=value)) +
-  geom_bar(stat = "identity", fill="white", colour="black") +
-  ggtitle("Lasso Coefficients") + labs(x="")
+  geom_bar(stat = "identity", fill=col_lasso, colour="black") +
+  ggtitle("Lasso Coefficients") + labs(x="",y="")
 
 ridgePlot =  ggplot(betaS.ridge, aes(x=feature, y=value)) +
-  geom_bar(stat = "identity", fill="white", colour="black") +
-  ggtitle("Ridge Coefficients") + labs(x="")
+  geom_bar(stat = "identity", fill=col_ridge, colour="black") +
+  ggtitle("Ridge Coefficients") + labs(x="",y="")
 
 rfPlot =  ggplot(betaS.rf, aes(x=feature, y=value)) +
-  geom_bar(stat = "identity", fill="white", colour="black") +
-  ggtitle("Random Forest Variable Importances")
+  geom_bar(stat = "identity", fill="turquoise2", colour="black") +
+  ggtitle("Random Forest Variable Importances") +labs(x="",y="")
 
 grid.arrange(elnetPlot, lassoPlot, ridgePlot, rfPlot, nrow = 4)
