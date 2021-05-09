@@ -27,6 +27,8 @@ baseball.df <- baseball.df %>% rename(Bat = "#Bat", Fld = "#Fld", Fld_percent = 
                                       R_by_G = "R/G", RA_by_G = "RA/G",
                                       Rtot_by_yr = "Rtot/yr", Rdrs_by_yr = "Rdrs/yr")
 
+baseball.df <- baseball.df %>% mutate_all(~(scale(.) %>% as.vector))
+
 #Creating data structure to store R2's ----
 rid.r2 = vector(); las.r2 = vector(); elnet.r2 = vector(); rf.r2 = vector(); 
 rid.cv.t = vector(); las.cv.t = vector(); elnet.cv.t = vector(); 
