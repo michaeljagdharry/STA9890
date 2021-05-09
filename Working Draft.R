@@ -91,9 +91,9 @@ boxplot(x = r2.test, ylim=c(a,b), main=TeX('Test $R^2$'), names = c("Ridge","Las
 #Part 4c ----
 #Creating CV plots for Ridge, Lasso, and Elnet
 par(mfrow=c(1,1))
-regularize(1, cvplot=T)
-regularize(.5, cvplot=T)
-regularize(0, cvplot=T)
+cv.fit.elnet <- regularize(.5, cvplot = T)$CV.Out
+cv.fit.lasso <- regularize(1, cvplot = T)$CV.Out
+cv.fit.ridge <- regularize(0, cvplot = T)$CV.Out
 
 #Obtaining Point Estimate of CV times
 avg.cv.t <- colMeans(cv.t.data)
@@ -167,11 +167,6 @@ x=model.matrix (Wins~.,baseball.df)[,-1]
 y=baseball.df$Wins #Response vector for ridge regression via glmnet()
 p=dim(baseball.df)[2]-1
 rf.baseball.out  =  randomForest(Wins~., data=baseball.df, mtry= floor(sqrt(p)), importance=TRUE)
-
-par(mfrow=c(1,1))
-cv.fit.elnet <- regularize(.5, cvplot = T)$CV.Out
-cv.fit.lasso <- regularize(1, cvplot = T)$CV.Out
-cv.fit.ridge <- regularize(0, cvplot = T)$CV.Out
 
 elnet.out=glmnet(x,y,alpha=.5, lambda = cv.fit.elnet$lambda.min)
 lasso.out=glmnet(x,y,alpha=1, lambda = cv.fit.lasso$lambda.min)
