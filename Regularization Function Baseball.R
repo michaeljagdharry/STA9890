@@ -8,11 +8,9 @@ regularize <- function(a, cvplot=FALSE, data=baseball.df, nosplit=FALSE) {
   
   if (nosplit == TRUE) {
     t_start = Sys.time() #Start timer
-    x=model.matrix (Wins~.,data )[,-1]#Data matrix without intercept column for ridge regression via glmnet()
+    x=model.matrix(Wins~.,data )[,-1]#Data matrix without intercept column for ridge regression via glmnet()
     y=data$Wins #Response vector for ridge regression via glmnet()
-    lambdas = 10^seq(6,-2,length=50); lambdas #vector of lambdas to try out
     #coef(ridge.mod)[,50] #Accessing the ridge regression coefficients for the 50th lambda
-    cv.out=cv.glmnet(x.train,y.train,alpha=a,lambda = lambdas)
     reg.out=glmnet(x,y,alpha=a)  #Fitting Model
     #Ridge Regression model with unspecified lambda(?). Documentation warns
     #against supplying a single lamdba for prediction. 
@@ -29,7 +27,7 @@ regularize <- function(a, cvplot=FALSE, data=baseball.df, nosplit=FALSE) {
     y=data$Wins #Response vector for ridge regression via glmnet()
     y.train = y[split]
     y.test = y[-split]
-    lambdas = 10^seq(6,-2,length=50); lambdas #vector of lambdas to try out
+    lambdas = 10^seq(6,-2,length=30); lambdas #vector of lambdas to try out
     cv.out=cv.glmnet(x.train,y.train,alpha=a,lambda = lambdas)
     bestlam=cv.out$lambda.min
     reg.out=glmnet(x,y,alpha=a)  #Fitting Model
@@ -42,9 +40,9 @@ regularize <- function(a, cvplot=FALSE, data=baseball.df, nosplit=FALSE) {
 
   if (cvplot == TRUE) {
     #Plots the CV(10) estimate (pg. 181) for each lambda.
-    if (a == 0) {plot(cv.out,sub = "10-Fold Cross Validation Curve for Ridge Regression",)}
-    else if (a==.5) {plot(cv.out,sub = "10-Fold Cross Validation Curve for El-net Regression",)}
-    else if (a==1) {plot(cv.out,sub = "10-Fold Cross Validation Curve for Lasso Regression",)}
+    if (a == 0) {plot(cv.out,sub = "10-Fold Cross Validation Curve for Ridge Regression")}
+    else if (a==.5) {plot(cv.out,sub = "10-Fold Cross Validation Curve for El-net Regression")}
+    else if (a==1) {plot(cv.out,sub = "10-Fold Cross Validation Curve for Lasso Regression")}
     abline(v=log(bestlam), col="red")
   }
 
@@ -78,7 +76,8 @@ regularize <- function(a, cvplot=FALSE, data=baseball.df, nosplit=FALSE) {
   output_list = list(`Test Residuals`=as.numeric(resid.test),
                      `Train Residuals`=as.numeric(resid.train),
                      `R2`=R2,
-                     `Runtime` = t_end-t_start)
+                     `Runtime` = t_end-t_start,
+                     `CV.Out` = cv.out)
   return(output_list)
 }
 
