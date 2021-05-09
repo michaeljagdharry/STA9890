@@ -161,19 +161,19 @@ r2.intervals
 #Part 5c ----
 #Present Bar plots of the coefficients
 #Use elastic-net estimated coefficients to create an order largest to smallest
-x=model.matrix (Wins~.,baseball.df )[,-1]
+x=model.matrix (Wins~.,baseball.df)[,-1]
 y=baseball.df$Wins #Response vector for ridge regression via glmnet()
 p=dim(baseball.df)[2]-1
 rf.baseball.out  =  randomForest(Wins~., data=baseball.df, mtry= floor(sqrt(p)), importance=TRUE)
 
-cv.fit.elnet = cv.glmnet(x,y,alpha=0.5, nfolds=10)
-cv.fit.lasso = cv.glmnet(x,y,alpha=1, nfolds=10)
-cv.fit.ridge = cv.glmnet(x,y,alpha=0, fnolds=10)
+par(mfrow=c(1,1))
+cv.fit.elnet <- regularize(.5, cvplot = T)$CV.Out
+cv.fit.lasso <- regularize(1, cvplot = T)$CV.Out
+cv.fit.ridge <- regularize(0, cvplot = T)$CV.Out
 
 elnet.out=glmnet(x,y,alpha=.5, lambda = cv.fit.elnet$lambda.min)
 lasso.out=glmnet(x,y,alpha=1, lambda = cv.fit.lasso$lambda.min)
 ridge.out=glmnet(x,y,alpha=0, lambda = cv.fit.ridge$lambda.min)
-
 
 betaS.elnet             =     data.frame(c(1:p), as.vector(elnet.out$beta))
 betaS.lasso             =     data.frame(c(1:p), as.vector(lasso.out$beta))
@@ -193,7 +193,6 @@ betaS.ridge$feature     =  factor(betaS.ridge$feature, levels = betaS.elnet$feat
 imp.rf <- importance(rf.baseball.out)
 print(imp.rf[order(imp.rf[, 1]), ])
 betaS.rf$feature        =  factor(betaS.rf$feature, levels = betaS.elnet$feature[order(betaS.elnet$value, decreasing = TRUE)])
-
  
 col_elnet = ifelse(betaS.elnet$value>0,"turquoise2","tomato1")
 col_lasso = ifelse(betaS.lasso$value>0,"turquoise2","tomato1")
